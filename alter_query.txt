@@ -1,0 +1,1 @@
+ALTER TABLE `dms_submittal_form_fields` ADD `use_in_submittal` BOOLEAN NOT NULL DEFAULT TRUE AFTER `type`, ADD `required` BOOLEAN NOT NULL DEFAULT FALSE AFTER `use_in_submittal`, ADD `searchable` BOOLEAN NOT NULL DEFAULT TRUE AFTER `required`, ADD `sortable` BOOLEAN NOT NULL DEFAULT TRUE AFTER `searchable`;
