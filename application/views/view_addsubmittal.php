@@ -18,15 +18,15 @@
                             <div class="box box-primary" style="z-index:99999;float:left">
                                <?php 
 								 if(isset($msg)){ ?>
-									<div class="alert alert-success alert-dismissable">
+									<div class="alert <?php echo $msg['type'];?> alert-dismissable">
                                         <i class="fa fa-check"></i>
                                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                        <b>Sucess!</b> <?php echo $msg?>
+                                        <b><?php echo $msg['msg']?></b>
                                     </div>		
 								
 								<?php	} ?>
 							   
-                                <form role="form" action="" method="POST" enctype="multipart/form-data">
+                                <form role="form" action="/submittals/submitsubmital" method="POST" enctype="multipart/form-data">
                                     <div class="box-body">
                                         <?php foreach($fields as $f){?>
                                         <div class="form-group col-md-6">
@@ -41,7 +41,7 @@
                                             <input type="text" <?php if($f['is_mandatory'] == true){echo "required";}?> class="form-control datepicker" name="<?php echo $f['fieldname']?>" id="<?php echo $f['fieldname']?>">
                                             <?php }else if($f['type'] == "select" || $f['type'] == "multiselect"){ ?>
                                             <select <?php if($f['is_mandatory'] == true){echo "required";}?> class="form-control <?php if($f['type'] == 'multiselect'){echo 'multiselect-ui';}?>" <?php if($f['type'] == "multiselect"){ ?>multiple="multiple"<?php } ?> name="<?php echo $f['fieldname']?><?php if($f['type'] == 'multiselect'){echo '[]';}?>" id="<?php echo $f['fieldname']?>">
-                                                 <option value=''>Select <?php echo $f['label']?></option>
+                                                 <?php if($f['type'] != 'multiselect'){?><option value=''>Select <?php echo $f['label']?></option><?php } ?>
                                                  <?php foreach ($f['options'] as $optionIndex => $option) { ?>
                                                  <option value="<?php echo $option['option_value']; ?>"><?php echo $option['option_value']; ?></option>
                                                  <?php } ?>

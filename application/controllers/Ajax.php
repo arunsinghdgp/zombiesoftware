@@ -37,6 +37,7 @@ class Ajax extends CI_Controller {
 			'label'=> $postData['label'],
 			'type' => $postData['type'],
 			'use_in_submittal' => isset($postData['use_in_submittal'])?true:false,
+			'show_in_search_result' => isset($postData['show_in_search_result'])?true:false,
 			'is_mandatory' => isset($postData['is_mandatory'])?true:false,
 			'is_searchable' => isset($postData['is_searchable'])?true:false,
 			'is_sortable' => isset($postData['is_sortable'])?true:false,
@@ -47,22 +48,21 @@ class Ajax extends CI_Controller {
 			$this->db->where('id', $postData['id']);
 			$this->db->update('dms_submittal_form_fields',$data);
 			$rowId = $postData['id'];
-			// Delete Old Schema and add new schema
-			//$this->sorlutils->addSchemaField();
+			// No need to update solr schema as field name and type update is not allowed.
 		}else{
 			$this->db->set('create_date', 'NOW()', FALSE);
 			$this->db->insert('dms_submittal_form_fields',$data);
 			$rowId = $this->db->insert_id();
 
 			// Add schema field in solr
-			$schemaAddData['add-field'] = array(
-															"name" => $data['fieldname'],
-															"type"=>"string",
-															"stored"=>true,
-																"indexed"=>true
-													);
+			$schemaAddData = array(
+									"name" => $data['fieldname'],
+									"type"=>"string",
+									"stored"=>true,
+									"indexed"=>true
+								);
 			if($postData['type'] == 'multiselect'){
-				$schemaAddData['add-field']["multiValued"] = true;
+				$schemaAddData["multiValued"] = true;
 			}
 
 			$this->solrutils->addSchemaField($schemaAddData);
@@ -90,6 +90,31 @@ class Ajax extends CI_Controller {
 		echo json_encode($data);
 	}
 	
+	function deletefield(){
+		$postData=$this->input->post();
+		$result = array();
+		if(isset($postData['argument']) && $postData['argument']!=0){
+			$this->db->select(array('fieldname','type'));
+			$this->db->from('dms_submittal_form_fields');
+			$this->db->where('id', $postData['argument']);
+			$result=$this->db->get()->result();
+			if(count($result)>0){
+				foreach($result as $row=>$value){
+					// Delete field from solr schema
+					$this->solrutils->deleteSchemaField($value->fieldname);
+
+					// Delete Field options
+					if($value->type == 'select' || $value->type == 'multiselect'){
+						$this->db->delete('dms_submittal_form_field_options', array('field_id' => $postData['argument']));
+					}
+				}
+			}
+			$this->db->delete('dms_submittal_form_fields', array('id' => $postData['argument']));
+			
+		}
+		echo json_encode(array('success'=>true));
+	}
+
 	function getCityListByCountryId(){
 
 		$fieldName=$this->input->post('country');
@@ -146,10 +171,14 @@ class Ajax extends CI_Controller {
 
 	function getUserList(){
 
-		$this->db->select("user_id as id,concat(u.user_name,' - ',o.organisation_name) as name,user_email",FALSE);
+		$query=trim($this->input->get('q'));
+		$this->db->select("user_id as id,concat(u.user_first_name,' ',u.user_last_name,' - ',o.organisation_name) as name,user_email",FALSE);
 		$this->db->from('tbl_user u');
 		$this->db->join('tbl_organisation o','o.organisation_id=u.user_organisation');
+		$this->db->like('u.user_first_name',$query);
+		$this->db->or_like('u.user_last_name',$query);
 		$result=$this->db->get()->result_array();
+		
 		echo json_encode($result);
 	}
 

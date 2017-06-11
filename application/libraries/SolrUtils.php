@@ -54,11 +54,18 @@ class SolrUtils
         return true;
     }
 
-    public function insertDataInSolrCore($data){
+    public function insertDataInSolrCore($document){
+        $data = array("add"=>array('doc'=>$document));
         return $this->makeCurlRequest($this->_getSolrRequestUrl("insert_document"), "POST", json_encode($data));
     }
 
-    public function addSchemaField($data){
+    public function addSchemaField($input){
+        $data = array("add-field"=>$input);
         return $this->makeCurlRequest($this->_getSolrRequestUrl("schema_add_field"), "POST", json_encode($data));
+    }
+
+    public function deleteSchemaField($field){
+        $data = array("delete-field"=>array("name"=>$field));
+        return $this->makeCurlRequest($this->_getSolrRequestUrl("schema_delete_field"), "POST", json_encode($data));
     }
 }

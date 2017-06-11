@@ -1,7 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 ini_set("max_execution_time", 0);
-date_default_timezone_set("Asia/Kolkata");
 class submittals extends CI_Controller {
 	public function __construct(){
         parent::__construct();
@@ -99,7 +98,57 @@ class submittals extends CI_Controller {
 	public function listsubmittal()
 	{
 		$this->load->view('view_header');
-		$this->load->view('view_listsubmittal');
+		$data['searchFields'] = $this->getAllSearchableFields();
+		$data['sortFields'] = $this->getAllSortableFields();
+		$data['searchColumns'] = $this->getAllResultsColumn();
+		
+
+		$this->load->view('view_listsubmittal', $data);
+	}
+
+	private function getAllSearchableFields(){
+		$this->db->select('*');
+		$this->db->from('dms_submittal_form_fields');
+		$this->db->order_by("field_order", "ASC");
+		$this->db->order_by("create_date", "DESC");
+		$this->db->order_by("modified_date", "DESC");
+		$this->db->where('is_searchable', true);
+		$data = $this->db->get()->result_array();
+		foreach ($data as $key => $value) {
+			if($value['type'] == 'select' || $value['type'] == 'multiselect'){
+				$data[$key]["options"]=$this->fetchAllOptions();
+			}
+		}
+		return $data;
+	}
+
+	private function fetchAllOptions($fieldId){
+		$this->db->select('*');
+		$this->db->from('dms_submittal_form_field_options');
+		$this->db->where('field_id', $fieldId);
+		return $this->db->get()->result_array();
+	}
+
+	private function getAllSortableFields(){
+		$this->db->select(array("fieldname", "label", "type"));
+		$this->db->from('dms_submittal_form_fields');
+		$this->db->order_by("field_order", "ASC");
+		$this->db->order_by("create_date", "DESC");
+		$this->db->order_by("modified_date", "DESC");
+		$this->db->where('is_sortable', true);
+
+		return $this->db->get()->result_array();
+	}
+
+	private function getAllResultsColumn(){
+		$this->db->select(array("fieldname", "label", "type"));
+		$this->db->from('dms_submittal_form_fields');
+		$this->db->order_by("field_order", "ASC");
+		$this->db->order_by("create_date", "DESC");
+		$this->db->order_by("modified_date", "DESC");
+		$this->db->where('show_in_search_result', true);
+
+		return $this->db->get()->result_array();
 	}
 	
 	public function addsubmittal()
@@ -117,7 +166,37 @@ class submittals extends CI_Controller {
 				$info['fields'][$key]["options"]=$this->db->get()->result_array();
 			}
 		}
+		$info['msg'] = $this->session->flashdata('flash_message');
 		$this->load->view('view_addsubmittal', $info);
+	}
+
+	public function submitsubmital()
+	{
+		$formData = $_POST;
+		// upload files
+		if(isset($_FILES) && count($_FILES) > 0){
+			$uploadedFileNames = $this->uploadSubmitalFiles($_FILES);
+			$formData = array_merge($formData, $uploadedFileNames);
+		}
+
+		$out = $this->solrutils->insertDataInSolrCore($formData);
+		if($out->responseHeader->status == 0){
+			$this->session->set_flashdata('flash_message', array('type'=>'alert-success', 'msg'=>"Document added successfully"));
+		}else{
+			$this->session->set_flashdata('flash_message', array('type'=>'alert-danger', 'msg'=>"Something went wrong. Please try again!!"));
+		}
+		
+		header("Location: /submittals/addsubmittal");
+	}
+
+	private function uploadSubmitalFiles($filesArray){
+		$uploads_dir = "uploads/submitalFiles/";
+		$fileNames = array();
+		foreach($filesArray as $key=>$file){
+			$fileNames[$key] = $uploads_dir.time().'_'.mt_rand().'_'.$file['name'];
+			move_uploaded_file($file['tmp_name'], $fileNames[$key]);
+		}
+		return $fileNames;
 	}
 	
 	

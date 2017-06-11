@@ -27,92 +27,69 @@
 						  <h3 align="center">Search - Document Register</h3>
 							<form class="form-horizontal adv-srch">
 								<div class="row">
-								  <div class="form-group col-lg-4 col-md-6 col-sm-12">
-									<label for="dwg-number" class="control-label">Document No</label>
-									<input type="text" class="form-control filterQueryInput" name="dwg-number" id="dwg-number">
-								  </div>
-								  <div class="form-group col-lg-4 col-md-6 col-sm-12">
-									<label for="Description" class="control-label">Title</label>
-									<input type="text" class="form-control filterQueryInput" name="Description" id="Description">
-								  </div>
-								  <div class="form-group col-lg-4 col-md-6 col-sm-12">
-									<label for="Type" class="control-label">Type</label>
-									<select class="form-control filterQueryInput" name="Type" id="Type">
-									  <option value="">Any</option>
-									  <option value="Work Inspection Request">Work Inspection Request</option>
-									  <option value="Design Drawing">Design Drawing</option>
-									  <option value="Material Submittal">Material Submittal</option>
-									  <option value="Shop Drawing">Shop Drawing</option>
-									  <option value="Material Submittal">Material Submittal</option>
-									  <option value="Daily Report">Daily Report</option>
-									  <option value="Method Statement">Method Statement</option>
-									  <option value="Report">Report</option>
-									</select>
-								  </div>
+								  <?php 
+								  $totalFields = count($searchFields);
+								  $loopCounter = $totalFields > 3? 3:$totalFields;
+								  for($i=0; $i<$loopCounter; $i++){ ?>
+                                    <div class="form-group col-lg-4 col-md-6 col-sm-12">
+										<label for="<?php echo $searchFields[$i]['fieldname'] ?>" class="control-label"><?php echo $searchFields[$i]['label'] ?></label>
+										<?php if($searchFields[$i]['type'] == "text"){ ?>
+                                        <input type="text" class="form-control filterQueryInput" name="<?php echo $searchFields[$i]['fieldname'] ?>" id="<?php echo $searchFields[$i]['fieldname'] ?>">
+                                        <?php }else if($searchFields[$i]['type'] == "textarea"){ ?>
+                                        <textarea class="textarea" name="<?php echo $searchFields[$i]['fieldname']?>" id="<?php echo $searchFields[$i]['fieldname']?>"></textarea>
+                                        <?php }else if($searchFields[$i]['type'] == "date"){ ?>
+                                        <input type="text" class="form-control datepicker" name="<?php echo $searchFields[$i]['fieldname']?>" id="<?php echo $searchFields[$i]['fieldname']?>">
+                                        <?php }else if($searchFields[$i]['type'] == "select" || $searchFields[$i]['type'] == "multiselect"){ ?>
+                                        <select class="form-control <?php if($searchFields[$i]['type'] == 'multiselect'){echo 'multiselect-ui';}?>" <?php if($searchFields[$i]['type'] == "multiselect"){ ?>multiple="multiple"<?php } ?> name="<?php echo $searchFields[$i]['fieldname']?><?php if($searchFields[$i]['type'] == 'multiselect'){echo '[]';}?>" id="<?php echo $searchFields[$i]['fieldname']?>">
+                                             <?php if($searchFields[$i]['type'] != 'multiselect'){?><option value=''>Any</option><?php } ?>
+                                             <?php foreach ($searchFields[$i]['options'] as $optionIndex => $option) { ?>
+                                             <option value="<?php echo $option['option_value']; ?>"><?php echo $option['option_value']; ?></option>
+                                             <?php } ?>
+                                        </select>
+                                        <?php } ?>
+									</div>
+                                  <?php } ?>
 								</div>
+								<?php if($totalFields > 3){ ?>
 								<div id="advancedOptions" class="row panel-collapse collapse">
-									  <div class="form-group col-lg-4 col-md-6 col-sm-12">
-										<label for="Discipline" class="control-label">Discipline</label>
-										<select class="form-control filterQueryInput" name="Discipline" id="Discipline">
-										  <option value="">Any</option>
-										  <option value="Architectural">Architectural</option>
-										  <option value="Design Drawing">Design Drawing</option>
-										  <option value="Civil">Civil</option>
-										  <option value="Electrical">Electrical</option>
-										  <option value="Health & Safety">Health & Safety</option>
-										  <option value="Infrastructure">Infrastructure</option>
-										  <option value="Mechanical">Mechanical</option>
-										  <option value="Others">Others</option>
-										  <option value="Signage">Signage</option>
-										  <option value="Structural">Structural</option>
-										</select>
-									  </div>
-									  <div class="form-group col-lg-4 col-md-6 col-sm-12">
-										<label for="Status" class="control-label">Status</label>
-										<select class="form-control filterQueryInput" name="Status" id="Status">
-										  <option value="">Any</option>
-										  <option value="A - Approved">A - Approved</option>
-										  <option value="B - Approved with Comment">B - Approved with Comment</option>
-										  <option value="C - Revised and Re-submit">C - Revised and Re-submit</option>
-										  <option value="D - Rejected">D - Rejected</option>
-										  <option value="F-Information Only">F-Information Only</option>
-										  <option value="S - Superseded">S - Superseded</option>
-										  <option value="X - Not Yet Completed">X - Not Yet Completed</option>
-										</select>
-									  </div>
-									  <div class="form-group col-lg-4 col-md-6 col-sm-12">
-										<label for="Revision" class="control-label">Revision</label>
-										<input type="text" class="form-control filterQueryInput" name="Revision" id="Revision">
-									  </div>
-									  <div class="form-group col-lg-4 col-md-6 col-sm-12">
-										<label for="Zone_Floor" class="control-label">Building</label>
-										<input type="text" class="form-control filterQueryInput" name="Zone_Floor" id="Zone_Floor">
-									  </div>
-								  </div>
-								<a data-toggle="collapse" href="#advancedOptions" class="showMoreLink">Show more</a>
+								<?php 
+								  for($i=3; $i<$totalFields; $i++){ ?>
+                                    <div class="form-group col-lg-4 col-md-6 col-sm-12">
+										<label for="<?php echo $searchFields[$i]['fieldname'] ?>" class="control-label"><?php echo $searchFields[$i]['label'] ?></label>
+										<?php if($searchFields[$i]['type'] == "text"){ ?>
+                                        <input type="text" class="form-control filterQueryInput" name="<?php echo $searchFields[$i]['fieldname'] ?>" id="<?php echo $searchFields[$i]['fieldname'] ?>">
+                                        <?php }else if($searchFields[$i]['type'] == "textarea"){ ?>
+                                        <textarea class="textarea" name="<?php echo $searchFields[$i]['fieldname']?>" id="<?php echo $searchFields[$i]['fieldname']?>"></textarea>
+                                        <?php }else if($searchFields[$i]['type'] == "date"){ ?>
+                                        <input type="text" class="form-control datepicker" name="<?php echo $searchFields[$i]['fieldname']?>" id="<?php echo $searchFields[$i]['fieldname']?>">
+                                        <?php }else if($searchFields[$i]['type'] == "select" || $searchFields[$i]['type'] == "multiselect"){ ?>
+                                        <select class="form-control <?php if($searchFields[$i]['type'] == 'multiselect'){echo 'multiselect-ui';}?>" <?php if($searchFields[$i]['type'] == "multiselect"){ ?>multiple="multiple"<?php } ?> name="<?php echo $searchFields[$i]['fieldname']?><?php if($searchFields[$i]['type'] == 'multiselect'){echo '[]';}?>" id="<?php echo $searchFields[$i]['fieldname']?>">
+                                             <?php if($searchFields[$i]['type'] != 'multiselect'){?><option value=''>Any</option><?php } ?>
+                                             <?php foreach ($searchFields[$i]['options'] as $optionIndex => $option) { ?>
+                                             <option value="<?php echo $option['option_value']; ?>"><?php echo $option['option_value']; ?></option>
+                                             <?php } ?>
+                                        </select>
+                                        <?php } ?>
+									</div>
+                                  <?php } ?>
+                                </div>
+                                <a data-toggle="collapse" href="#advancedOptions" class="showMoreLink">Show more</a>
+								<?php } ?>
 								<div class="row">
 									<label for="sort_by" class="col-md-1 control-label">Sort By</label>
 									<div class="col-md-2">
 										<select class="form-control" name="sort_by" id="sort_by">
-										  <option value="dwg-number">Document No</option>
-										  <option value="Description">Title</option>
-										  <option value="Type">Type</option>
-										  <option value="Discipline">Discipline</option>
-										  <option value="Status">Status</option>
-										  <option value="Revision">Revision</option>
-										  <option value="Zone_Floor">Building</option>
+											<?php foreach ($sortFields as $key => $field) { ?>
+                                         	<option value="<?php echo $field['fieldname']; ?>"><?php echo $field['label']; ?></option>
+                                         	<?php } ?>
 										</select>
 									</div>
 									<label for="column_control" class="col-md-2 control-label">Columns Configuration</label>
 									<div class="col-md-4">
 										<select id="column_control" name="column_control[]" class="multiselect-ui form-control" multiple="multiple">
-											<option value="dwg-number" selected>Document No</option>
-											<option value="Description" selected>Title</option>
-											<option value="Type" selected>Type</option>
-											<option value="Discipline" selected>Discipline</option>
-											<option value="Status" selected>Status</option>
-											<option value="Revision" selected>Revision</option>
-											<option value="Zone_Floor" selected>Building</option>
+											<?php foreach ($searchColumns as $key => $field) { ?>
+                                         	<option value="<?php echo $field['fieldname']; ?>"><?php echo $field['label']; ?></option>
+                                         	<?php } ?>
 										</select>
 									</div>
 									<label for="rows" class="col-md-1 control-label">Rows</label>
@@ -156,18 +133,14 @@
 								<table class="table">
 									<thead id="table_heading">
 									  <tr>
-										<th>Document No</th>
-										<th>Title</th>
-										<th>Type</th>
-										<th>Discipline</th>
-										<th>Status</th>
-										<th>Revision</th>
-										<th>Building</th>
+									  	<?php foreach ($searchColumns as $key => $field) { ?>
+										<th><?php echo $field['label']; ?></th>
+										<?php } ?>
 									  </tr>
 									</thead>
 									<tbody id="search-results">
 										<tr id="no-results">
-											<td colspan="7" align="center">No records to display</td>
+											<td colspan="<?php echo count($searchColumns)?>" align="center">No records to display</td>
 										</tr>
 									</tbody>
 								</table>
@@ -212,8 +185,8 @@
 					var columnsArr = $("#column_control").val(),
 						start = ((pageNumber*rowPerPage)-rowPerPage),
 						requestUrl = solrSearchUrl+"?q=*:*&start="+start+"&rows="+$("#rows").val()+"&wt=json&json.wrf=callback&fl="+columnsArr.join(',')+searchQueryData.fq;
-					console.log("searching ...", requestUrl);
-					getSearchResults(requestUrl).done(renderSearchResults);
+						console.log("searching ...", requestUrl);
+						getSearchResults(requestUrl).done(renderSearchResults);
 					return;
 				});
 				

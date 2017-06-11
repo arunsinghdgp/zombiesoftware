@@ -42,8 +42,14 @@
                                             case 'multiselect':
                                                 echo "Multi Select";
                                                 break;
+                                             case 'file':
+                                                echo "File";
+                                                break;
                                         }?></td>
-										<td><a href='' data-type="<?php echo $f['id']?>" class="btn editBtn">Edit</a></td>
+										<td>
+                                            <a href='' data-type="<?php echo $f['id']?>" class="btn editBtn">Edit</a>
+                                            <a href='' data-type="<?php echo $f['id']?>" class="btn deleteBtn">Delete</a>
+                                        </td>
 
 									</tr>
 									<?php  }?>
@@ -106,6 +112,24 @@
                       $('#modalBox').modal('show');
                     }
                 });
+                return false;
+            });
+
+            $('.deleteBtn').click(function(){
+                var self = this,
+                    $rowEl = $(this);
+                if(confirm("Are you sure you want to delete this field?")){
+                    $.ajax({
+                        url: '<?php echo base_url()?>ajax/deletefield', // getchart.php
+                        type: 'POST',
+                        data: {argument: $(this).attr('data-type')},
+                        success: function(response) {
+                            $rowEl.closest("tr").remove();
+                            alert("Field deleted successfully");
+                        }
+                    });
+                }
+                
                 return false;
             });
 
