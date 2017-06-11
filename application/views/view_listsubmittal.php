@@ -36,12 +36,11 @@
 										<?php if($searchFields[$i]['type'] == "text"){ ?>
                                         <input type="text" class="form-control filterQueryInput" name="<?php echo $searchFields[$i]['fieldname'] ?>" id="<?php echo $searchFields[$i]['fieldname'] ?>">
                                         <?php }else if($searchFields[$i]['type'] == "textarea"){ ?>
-                                        <textarea class="textarea" name="<?php echo $searchFields[$i]['fieldname']?>" id="<?php echo $searchFields[$i]['fieldname']?>"></textarea>
+                                        <textarea class="textarea filterQueryInput" name="<?php echo $searchFields[$i]['fieldname']?>" id="<?php echo $searchFields[$i]['fieldname']?>"></textarea>
                                         <?php }else if($searchFields[$i]['type'] == "date"){ ?>
-                                        <input type="text" class="form-control datepicker" name="<?php echo $searchFields[$i]['fieldname']?>" id="<?php echo $searchFields[$i]['fieldname']?>">
+                                        <input type="text" class="form-control datepicker filterQueryInput" name="<?php echo $searchFields[$i]['fieldname']?>" id="<?php echo $searchFields[$i]['fieldname']?>">
                                         <?php }else if($searchFields[$i]['type'] == "select" || $searchFields[$i]['type'] == "multiselect"){ ?>
-                                        <select class="form-control <?php if($searchFields[$i]['type'] == 'multiselect'){echo 'multiselect-ui';}?>" <?php if($searchFields[$i]['type'] == "multiselect"){ ?>multiple="multiple"<?php } ?> name="<?php echo $searchFields[$i]['fieldname']?><?php if($searchFields[$i]['type'] == 'multiselect'){echo '[]';}?>" id="<?php echo $searchFields[$i]['fieldname']?>">
-                                             <?php if($searchFields[$i]['type'] != 'multiselect'){?><option value=''>Any</option><?php } ?>
+                                        <select class="form-control filterQueryInput multiselect-ui" multiple="multiple" name="<?php echo $searchFields[$i]['fieldname']?>" id="<?php echo $searchFields[$i]['fieldname']?>">
                                              <?php foreach ($searchFields[$i]['options'] as $optionIndex => $option) { ?>
                                              <option value="<?php echo $option['option_value']; ?>"><?php echo $option['option_value']; ?></option>
                                              <?php } ?>
@@ -59,12 +58,11 @@
 										<?php if($searchFields[$i]['type'] == "text"){ ?>
                                         <input type="text" class="form-control filterQueryInput" name="<?php echo $searchFields[$i]['fieldname'] ?>" id="<?php echo $searchFields[$i]['fieldname'] ?>">
                                         <?php }else if($searchFields[$i]['type'] == "textarea"){ ?>
-                                        <textarea class="textarea" name="<?php echo $searchFields[$i]['fieldname']?>" id="<?php echo $searchFields[$i]['fieldname']?>"></textarea>
+                                        <textarea class="textarea filterQueryInput" name="<?php echo $searchFields[$i]['fieldname']?>" id="<?php echo $searchFields[$i]['fieldname']?>"></textarea>
                                         <?php }else if($searchFields[$i]['type'] == "date"){ ?>
-                                        <input type="text" class="form-control datepicker" name="<?php echo $searchFields[$i]['fieldname']?>" id="<?php echo $searchFields[$i]['fieldname']?>">
+                                        <input type="text" class="form-control datepicker filterQueryInput" name="<?php echo $searchFields[$i]['fieldname']?>" id="<?php echo $searchFields[$i]['fieldname']?>">
                                         <?php }else if($searchFields[$i]['type'] == "select" || $searchFields[$i]['type'] == "multiselect"){ ?>
-                                        <select class="form-control <?php if($searchFields[$i]['type'] == 'multiselect'){echo 'multiselect-ui';}?>" <?php if($searchFields[$i]['type'] == "multiselect"){ ?>multiple="multiple"<?php } ?> name="<?php echo $searchFields[$i]['fieldname']?><?php if($searchFields[$i]['type'] == 'multiselect'){echo '[]';}?>" id="<?php echo $searchFields[$i]['fieldname']?>">
-                                             <?php if($searchFields[$i]['type'] != 'multiselect'){?><option value=''>Any</option><?php } ?>
+                                        <select class="form-control filterQueryInput multiselect-ui" multiple="multiple" name="<?php echo $searchFields[$i]['fieldname']?>" id="<?php echo $searchFields[$i]['fieldname']?>">
                                              <?php foreach ($searchFields[$i]['options'] as $optionIndex => $option) { ?>
                                              <option value="<?php echo $option['option_value']; ?>"><?php echo $option['option_value']; ?></option>
                                              <?php } ?>
@@ -170,7 +168,9 @@
 					includeSelectAllOption: true,
 					buttonWidth: '100%'
 				});
-				console.log("document ready block");
+				$('#column_control').change(function(){
+					$('form.adv-srch').submit();
+				});
 				$('form.adv-srch').submit(function(e){
 					e && e.preventDefault();
 					var searchQueryData = prepareFilterQuery($(this).find(".filterQueryInput").serialize());
@@ -277,7 +277,7 @@
 						console.log(dataArr[i]);
 						var srchData = dataArr[i].split("=");
 						if(srchData[1] != '' && srchData[0]){
-							fq += "&fq="+srchData[0]+":*"+srchData[1]+"*";	
+							fq += "&fq="+srchData[0]+":"+encodeURI(srchData[1])+"";	
 							fieldsEntered++;
 						}
 					}

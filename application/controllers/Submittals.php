@@ -116,7 +116,7 @@ class submittals extends CI_Controller {
 		$data = $this->db->get()->result_array();
 		foreach ($data as $key => $value) {
 			if($value['type'] == 'select' || $value['type'] == 'multiselect'){
-				$data[$key]["options"]=$this->fetchAllOptions();
+				$data[$key]["options"]=$this->fetchAllOptions($value['id']);
 			}
 		}
 		return $data;
