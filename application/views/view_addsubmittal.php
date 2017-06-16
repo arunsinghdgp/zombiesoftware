@@ -1,4 +1,4 @@
-<link href="<?php echo base_url()?>assets/css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
+ <link href="<?php echo base_url()?>assets/css/chosen.css" rel="stylesheet" />
 <div class="wrapper row-offcanvas row-offcanvas-left">
             <?php include('sidebar.php')?>
 			<!-- Right side column. Contains the navbar and content of the page -->
@@ -40,7 +40,7 @@
                                             <?php }else if($f['type'] == "date"){ ?>
                                             <input type="text" <?php if($f['is_mandatory'] == true){echo "required";}?> class="form-control datepicker" name="<?php echo $f['fieldname']?>" id="<?php echo $f['fieldname']?>">
                                             <?php }else if($f['type'] == "select" || $f['type'] == "multiselect"){ ?>
-                                            <select <?php if($f['is_mandatory'] == true){echo "required";}?> class="form-control <?php if($f['type'] == 'multiselect'){echo 'multiselect-ui';}?>" <?php if($f['type'] == "multiselect"){ ?>multiple="multiple"<?php } ?> name="<?php echo $f['fieldname']?><?php if($f['type'] == 'multiselect'){echo '[]';}?>" id="<?php echo $f['fieldname']?>">
+                                            <select <?php if($f['is_mandatory'] == true){echo "required";}?> class="form-control <?php if($f['type'] == 'multiselect'){echo 'chosen-select';}?>" <?php if($f['type'] == "multiselect"){ ?>multiple="multiple"<?php } ?> name="<?php echo $f['fieldname']?><?php if($f['type'] == 'multiselect'){echo '[]';}?>" id="<?php echo $f['fieldname']?>">
                                                  <?php if($f['type'] != 'multiselect'){?><option value=''>Select <?php echo $f['label']?></option><?php } ?>
                                                  <?php foreach ($f['options'] as $optionIndex => $option) { ?>
                                                  <option value="<?php echo $option['option_value']; ?>"><?php echo $option['option_value']; ?></option>
@@ -91,17 +91,11 @@
 
         <!-- AdminLTE App -->
         <script src="<?php echo base_url()?>assets/js/AdminLTE/app.js" type="text/javascript"></script>
-        
-       
-       
+        <script src="<?php echo base_url()?>assets/js/chosen.jquery.js"></script>
 		 <script>
 		  $( function() {
-			$( ".datepicker" ).datepicker();
-			//$(".textarea").wysihtml5();
-            $('.multiselect-ui').multiselect({
-                includeSelectAllOption: true,
-                buttonWidth: '100%'
-            });
+			$(".datepicker").datepicker();
+			$(".chosen-select").chosen();
 		  });
 		  </script>
 		

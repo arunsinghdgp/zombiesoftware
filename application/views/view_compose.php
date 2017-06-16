@@ -1,4 +1,3 @@
-
 <link href="<?php echo base_url()?>assets/css/chosen.css" rel="stylesheet" />
 <style>
 a.submittalSelect{background: #4ECDC4;
@@ -17,40 +16,11 @@ a.submittalSelect{background: #4ECDC4;
                 <!-- Main content -->
                 <section class="content">
                     <div class="row mt">
-                    <div class="col-sm-12">
-                        <section class="panel">
-                            <div class="panel-body">
-
-                                <ul class="nav nav-pills  mail-nav">
-                                    <li>
-                                    <a href="<?php echo base_url()?>workflow/compose" class="btn btn-compose">
-                                        <i class="fa fa-pencil"></i>  Create Mail Type
-                                    </a>
-                                    </li>
-                                    <li class="active"><a href="<?php echo base_url()?>workflow"> <i class="fa fa-inbox"></i>
-                                     Incoming  <span class="label label-theme pull-right inbox-notification"><?php echo count($mail);?></span></a></li>
-                                    <li><a href="#"> <i class="fa fa-envelope-o"></i> Outgoing</a></li>
-                                    <li><a href="#"> <i class="fa fa-exclamation-circle"></i> Important</a></li>
-                                    <li><a href="#"> <i class="fa fa-file-text-o"></i> Drafts </a></li>
-                                    <li><a href="#"> <i class="fa fa-trash-o"></i> Trash</a></li>
-                                </ul>
-                            </div>
-                        </section>
-
-
-                    </div>
+                    <?php include('mail_header.php');?>
 
             <div class="col-sm-9">
                 <section class="panel">
-                    <header class="panel-heading wht-bg">
-                       <h4 class="gen-case">
-                           <form action="#" class="pull-right mail-src-position">
-                            <div class="input-append">
-                                <input type="text" class="form-control " placeholder="Search Mail">
-                            </div>
-                        </form>
-                       </h4>
-                    </header>
+
                     <div class="panel-body">
                         <!-- <div class="compose-btn pull-right">
                             <button class="btn btn-theme btn-sm"><i class="fa fa-check"></i> Send</button>
@@ -120,12 +90,16 @@ foreach($actionRequired as $a){
                                    <input type="text" id='response_date' name="response_date" readonly tabindex="1" id="date" class="datepicker form-control">
                                 </div>
 <?php
-$division=array("ANHE",
-"CS",
-"VP-1",
-"VP-2",
-"VP-3",
-"VP-3 to 5");?>
+$division=array("PM – Project Management",
+"CM – Construction Management",
+"CS – Construction Supervision",
+"IPM – Infrastructure Project Management",
+"ICM – Infrastructure Construction Management",
+"ICS – Infrastructure Construction Supervision",
+"DRS – Design Review Services",
+"CA – Commissioning",
+"CD – Claim and Dispute",
+"REMB – Reimbursable");?>
 								<div class="form-group col-md-6">
                                     <label for="subject" class="">Division:</label>
                                     <select class="chosen-select form-control" name="division[]" multiple>
@@ -237,16 +211,40 @@ foreach($area as $d){
 									</select>
                                 </div>
 					<?php
-$subarea=array("Architectural",
-"Civil",
-"Electrical",
-"General",
-"Health & Safety",
-"Infrastructure",
-"Mechanical",
-"Others",
-"Signage",
-"Structural");?>
+$subarea=array("Damac",
+"R2EE",
+"R2EEM",
+"R2EM",
+"R2EM M",
+"R2EMM",
+"R2MB",
+"R2M",
+"R2M M",
+"R2MM",
+"R2M1",
+"R2MB M",
+"R2EE M",
+"R2EE1 Villas",
+"R2EM & R2M",
+"R2EM & R2MB",
+"R2EM2",
+"R2EM2 Villas",
+"R2EMM only",
+"R2EMR2EMM",
+"R2EM+R2MM",
+"R2M & R2MM",
+"R2M 1 VILLA",
+"R2M only",
+"R2M2",
+"R2MM only",
+"R2M1 M",
+"R2M1M",
+"R2MBM",
+"R3EE",
+"REEM",
+"REFW",
+"V3",
+"V3M");?>
 								<div class="form-group col-md-6">
                                     <label for="subject" class="">Subarea:</label>
                                     <select class="chosen-select form-control" name="subarea[]" multiple>
@@ -288,7 +286,7 @@ $contractPackage=array("Blockwork Package",
 "Main Works Package",
 "OS&E Package",
 "Structural Works Package");?>
-								<div class="form-group ">
+								<div class="form-group col-md-12">
                                     <label for="subject" class="">Contract Package:</label>
                                     <select class="form-control" name="contract_package" >
                                       <option value=''>Select</option>
@@ -302,11 +300,11 @@ foreach($contractPackage as $d){
 
 									</select>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group col-md-12">
                                     <label for="subject" class="">Subject:</label>
                                     <input type="text" name='subject' tabindex="1" id="subject" class="form-control">
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group " style="clear:left">
                                     <a href="" class="btn btn-primary insertSign"  >Insert Signature</a>
 
                                 </div>

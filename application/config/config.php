@@ -23,7 +23,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://139.162.176.174';
 
 /*
 |--------------------------------------------------------------------------
@@ -513,4 +512,4 @@ $config['rewrite_short_tags'] = FALSE;
 $config['proxy_ips'] = '';
 $config['status']=array('Client meeting','Working in process','proposal sent','negotiation','MOU signed');
 
-$config['solr_host_url'] = 'http://localhost:8983/solr/zombie/';
+$config['solr_host_url'] = 'http://solrsearch/';
